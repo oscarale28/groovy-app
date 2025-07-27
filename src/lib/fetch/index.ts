@@ -1,5 +1,5 @@
 import { cookies } from "next/headers"
-import { ROUTES } from "../consts"
+import { SPOTIFY_ROUTES } from "../consts"
 import { getSpotifyAccessToken } from "../actions/spotify"
 
 type SpotifyFetchParams = {
@@ -19,7 +19,7 @@ export async function spotifyFetch({
     accessToken = tokenData.access_token
   }
 
-  const BASE_URL = ROUTES.spotify.base
+  const BASE_URL = SPOTIFY_ROUTES.base
 
   const response = await fetch(`${BASE_URL}${url}`, {
     ...options,
@@ -31,6 +31,7 @@ export async function spotifyFetch({
   })
 
   if (!response.ok) {
+    console.log(response.url)
     throw new Error(`Spotify API request failed with status ${response.status}`)
   }
 

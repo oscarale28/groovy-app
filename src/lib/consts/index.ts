@@ -10,19 +10,17 @@ const RECOMMENDED_ARTISTS_IDS: string[] = [
   '4uqzzJg3ww5eH7IgGV7DMT' // Bunbury
 ]
 
-const ROUTES = {
-  spotify: {
-    base: "https://api.spotify.com/v1",
-    artists: {
-      getArtists: "/artists",
-    },
-    albums: {
-      getNewReleases: "/browse/new-releases",
-    }
-  }
+const SPOTIFY_ROUTES = {
+  base: "https://api.spotify.com/v1",
+  getArtists: "/artists",
+  getSingleArtist: "/artist/:id",
+  getNewReleases: "/browse/new-releases",
+  getAlbums: "/albums",
+  getSingleAlbum: "/albums/:id",
+  getTracks: "/tracks"
 }
 
 export {
   RECOMMENDED_ARTISTS_IDS,
-  ROUTES
+  SPOTIFY_ROUTES
 }

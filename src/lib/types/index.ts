@@ -38,6 +38,7 @@ export interface Album {
     total_tracks: number;
     type: AlbumTypeEnum;
     uri: string;
+    tracks: Tracks;
 }
 
 export enum AlbumTypeEnum {
@@ -99,5 +100,10 @@ export enum Category {
     Albums = "albums",
     Artists = "artists",
     Tracks = "tracks"
+}
+export interface Tracks {
+    href: string;
+    total: number;
+    items: Track[];
 }
 
