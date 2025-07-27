@@ -3,6 +3,7 @@ import { useSidebar } from '@/components/ui/sidebar'
 import { useLibrary } from '@/lib/providers/LibraryProvider'
 import { Category } from '@/lib/types'
 import React from 'react'
+import { LibraryItemCard } from './LibraryItemCard'
 
 const CategoryList = () => {
   const { state } = useSidebar()
@@ -25,22 +26,16 @@ const CategoryList = () => {
 
   if (!listToRender || listToRender.length === 0) {
     return (
-      <div className="text-muted-foreground text-sm p-2">
+      <div className="text-muted-foreground text-sm mt-2">
         No items found in {selectedCategory.toLowerCase()}.
       </div>
     )
   }
 
-  const getItemName = (item: any) => {
-    if ('name' in item) return item.name
-    if ('title' in item) return item.title
-    return 'Unknown'
-  }
-
   return (
-    <div>
+    <div className='mt-2'>
       {listToRender.map((item, index) => (
-        <div key={('id' in item ? item.id : index)}>{getItemName(item)}</div>
+        <LibraryItemCard key={('id' in item ? item.id : index)} item={item} />
       ))}
     </div>
   )

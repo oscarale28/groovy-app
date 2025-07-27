@@ -1,8 +1,10 @@
 import { Sparkles, TrendingUp, Clock } from "lucide-react"
 import { RecommendedArtists } from "./RecommendedArtists"
 import { Suspense } from "react"
-import { getNewReleases, getRecommendedArtists } from "@/lib/actions/spotify"
+import { getNewReleases, getSeveralSpotifyData } from "@/lib/actions/spotify"
 import { TrendingAlbums } from "./TrendingAlbums"
+import { RECOMMENDED_ARTISTS_IDS } from "@/lib/consts"
+import { Artist } from "@/lib/types"
 
 
 const quickAccess = [
@@ -12,7 +14,14 @@ const quickAccess = [
 ]
 
 export async function HomeContent() {
-  const recommendedArtists = getRecommendedArtists()
+  const recommendedArtists = getSeveralSpotifyData<{
+    artists: Artist[]
+  }>(
+    {
+      dataType: "artists",
+      itemsIds: RECOMMENDED_ARTISTS_IDS
+    }
+  )
   const newReleases = getNewReleases()
   return (
     <>
@@ -22,43 +31,13 @@ export async function HomeContent() {
         Buenas noches
       </h1>
 
-      {/* Quick Access */}
-      <section>
-        <h2 className="text-2xl font-bold text-white mb-4">Acceso Rápido</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {quickAccess.map((item, index) => {
-            const Icon = item.icon
-            return (
-              <div
-                key={item.name}
-                className={`floating-card p-2 rounded-2xl cursor-pointer group relative overflow-hidden`}
-              >
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-20 transition-opacity duration-300`}
-                />
-                <div className="relative z-10 flex items-center gap-4">
-                  <div
-                    className={`w-12 h-12 bg-gradient-to-br ${item.color} rounded-xl flex items-center justify-center`}
-                  >
-                    <Icon size={24} className="text-white" />
-                  </div>
-                  <span className="text-white font-semibold">{item.name}</span>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      </section>
-
-
       <Suspense fallback={
         <h1>Cargando lanzamientos recientes...</h1>
       }>
         {
-          newReleases.then(albums => {
-            console.log("New releases fetched:", albums)
-            return <TrendingAlbums albums={albums.albums.items} />
-          })
+          newReleases.then(albums => (
+            <TrendingAlbums albums={albums.albums.items} />
+          ))
         }
       </Suspense>
 
@@ -66,15 +45,11 @@ export async function HomeContent() {
         <h1>Cargando artistas recomendados...</h1>
       }>
         {
-          recommendedArtists.then(artists => {
-            console.log("Recommended artists fetched:", artists)
-            return <RecommendedArtists artists={artists.artists} />
-          })
+          recommendedArtists.then(artists => (
+            <RecommendedArtists artists={artists.artists} />
+          ))
         }
       </Suspense>
-
-      {/* <TrendingSongs /> */}
-
     </>
   )
 }
