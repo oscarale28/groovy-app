@@ -1,28 +1,20 @@
 "use client"
 import { createContext, use, useMemo, useState, useEffect } from "react";
 import { Database } from "../types/database";
-import { Category } from "../types";
-import { getUserFavorites } from "../actions/favorites";
-import { getUserPlaylists } from "../actions/playlists";
+import { Album, Artist, Category, Track } from "../types";
 
 export type Playlist = Database["public"]["Tables"]["playlists"]["Row"];
-export type Album = Omit<
-  Database["public"]["Tables"]["user_favorite_albums"]["Row"],
-  'id' | 'user_id'>;
-export type Artist = Omit<Database["public"]["Tables"]["user_favorite_artists"]["Row"], 'id' | 'user_id'>;
-export type Track = Omit<Database["public"]["Tables"]["user_favorite_tracks"]["Row"], 'id' | 'user_id'>;
-
 
 interface LibraryContextType {
   selectedCategory: Category;
   setSelectedCategory: (category: Category) => void;
   playlists: Playlist[];
   albums: Album[];
+  setAlbums: (albums: Album[]) => void;
   artists: Artist[];
+  setArtists: (artists: Artist[]) => void;
   tracks: Track[];
-  isLoading: boolean;
-  error: string | null;
-  refetch: () => Promise<void>;
+  setTracks: (tracks: Track[]) => void;
 }
 
 const LibraryContext = createContext<LibraryContextType>({
@@ -30,11 +22,12 @@ const LibraryContext = createContext<LibraryContextType>({
   setSelectedCategory: () => { },
   playlists: [],
   albums: [],
+  setAlbums: () => { },
   artists: [],
+  setArtists: () => { },
   tracks: [],
-  isLoading: false,
-  error: null,
-  refetch: async () => { },
+  setTracks: () => { },
+
 });
 
 export const LibraryProvider = ({ children }: { children: React.ReactNode }) => {
@@ -46,45 +39,47 @@ export const LibraryProvider = ({ children }: { children: React.ReactNode }) => 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchLibraryData = async () => {
-    setIsLoading(true);
-    setError(null);
+  // const fetchLibraryData = async () => {
+  //   setIsLoading(true);
+  //   setError(null);
 
-    try {
-      const [userFavorites, userPlaylists] = await Promise.all([
-        getUserFavorites(),
-        getUserPlaylists()
-      ]);
+  //   try {
+  //     const [userFavorites, userPlaylists] = await Promise.all([
+  //       getUserFavorites(),
+  //       getUserPlaylists()
+  //     ]);
 
-      const { tracks: favTracks, albums: favAlbums, artists: favArtists } = userFavorites;
+  //     const { tracks: favTracks, albums: favAlbums, artists: favArtists } = userFavorites;
 
-      setPlaylists(userPlaylists);
-      setAlbums(favAlbums);
-      setArtists(favArtists);
-      setTracks(favTracks);
-    } catch (err) {
-      console.error('Error fetching library data:', err);
-      setError(err instanceof Error ? err.message : 'Error loading library data');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     setPlaylists(userPlaylists);
+  //     setAlbums(favAlbums);
+  //     setArtists(favArtists);
+  //     setTracks(favTracks);
+  //   } catch (err) {
+  //     console.error('Error fetching library data:', err);
+  //     setError(err instanceof Error ? err.message : 'Error loading library data');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchLibraryData();
-  }, []);
+  // useEffect(() => {
+  //   fetchLibraryData();
+  // }, []);
 
   const value = useMemo(() => ({
     selectedCategory,
     setSelectedCategory,
     playlists,
     albums,
+    setAlbums,
     artists,
+    setArtists,
     tracks,
+    setTracks,
     isLoading,
-    error,
-    refetch: fetchLibraryData
-  }), [selectedCategory, playlists, albums, artists, tracks, isLoading, error]);
+    error
+  }), [selectedCategory, playlists, albums, setAlbums, artists, setArtists, tracks, setTracks, isLoading, error]);
 
   return (
     <LibraryContext.Provider value={value}>

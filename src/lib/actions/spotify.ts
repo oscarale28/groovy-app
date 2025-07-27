@@ -1,10 +1,10 @@
 'use server'
 
-import { RECOMMENDED_ARTISTS_IDS, ROUTES } from "../consts"
+import { SPOTIFY_ROUTES } from "../consts"
 import { spotifyFetch } from "../fetch"
-import { Album, Artist } from "../types"
+import { Album } from "../types"
 
-export async function getSpotifyAccessToken() {
+async function getSpotifyAccessToken() {
 
   const clientId = process.env.SPOTIFY_CLIENT_ID
   const clientSecret = process.env.SPOTIFY_CLIENT_SECRET
@@ -27,20 +27,34 @@ export async function getSpotifyAccessToken() {
   return response.json()
 }
 
-export async function getRecommendedArtists(): Promise<{
-  artists: Artist[]
-}> {
-  const tracksIds = RECOMMENDED_ARTISTS_IDS
-  const ARTISTS_ENDPOINT = ROUTES.spotify.artists.getArtists
+type GetSeveralSpotifyDataProps = {
+  dataType: "artists" | "albums" | "tracks"
+  itemsIds: string[]
+}
+
+async function getSeveralSpotifyData<T>(props: GetSeveralSpotifyDataProps): Promise<T> {
+
+  const { itemsIds, dataType } = props
+
+  if (!itemsIds || itemsIds.length === 0) {
+    return [] as T
+  }
+
+  const queryIds = itemsIds
+  const ENDPOINT = {
+    ["artists"]: SPOTIFY_ROUTES.getArtists,
+    ["albums"]: SPOTIFY_ROUTES.getAlbums,
+    ["tracks"]: SPOTIFY_ROUTES.getTracks
+  }[dataType]
 
   const response = await spotifyFetch({
-    url: `${ARTISTS_ENDPOINT}?ids=${tracksIds.join(',')}`,
+    url: `${ENDPOINT}?ids=${queryIds.join(',')}`,
   })
 
   return response ?? []
 }
 
-export async function getNewReleases(): Promise<{
+async function getNewReleases(): Promise<{
   albums: {
     href: string
     limit: number
@@ -51,11 +65,28 @@ export async function getNewReleases(): Promise<{
     items: Album[]
   }
 }> {
-  const NEW_RELEASES_ENDPOINT = ROUTES.spotify.albums.getNewReleases
+  const NEW_RELEASES_ENDPOINT = SPOTIFY_ROUTES.getNewReleases
 
   const response = await spotifyFetch({
     url: `${NEW_RELEASES_ENDPOINT}?limit=4`,
   })
 
   return response ?? []
+}
+
+async function getAlbumDetails(albumId: string): Promise<Album> {
+  const ALBUM_ENDPOINT = SPOTIFY_ROUTES.getSingleAlbum.replace(':id', albumId)
+
+  const response = await spotifyFetch({
+    url: ALBUM_ENDPOINT,
+  })
+
+  return response
+}
+
+export {
+  getSpotifyAccessToken,
+  getSeveralSpotifyData,
+  getNewReleases,
+  getAlbumDetails
 }
