@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Figtree } from "next/font/google";
 import "./globals.css";
+import MainLayout from "@/components/layouts/MainLayout";
 
 const figtree = Figtree({
   subsets: ["latin"],
@@ -21,7 +22,9 @@ export default function RootLayout({
       <body
         className={`${figtree.className} dark`}
       >
-        {children}
+        <MainLayout>
+          {children}
+        </MainLayout>
       </body>
     </html>
   );

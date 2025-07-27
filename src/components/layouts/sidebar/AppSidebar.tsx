@@ -6,23 +6,10 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarSeparator,
 } from "@/components/ui/sidebar"
-import { Home, Compass, Library } from "lucide-react"
+import { Home, Library } from "lucide-react"
 import LibrarySidebar from "./library/LibrarySidebar"
-
-const items = [
-  {
-    title: "Home",
-    url: "#",
-    icon: Home,
-  },
-  {
-    title: "Explore",
-    url: "#",
-    icon: Compass,
-  },
-]
+import Link from "next/link"
 
 const AppSidebar = async () => {
 
@@ -32,26 +19,23 @@ const AppSidebar = async () => {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              <SidebarMenuItem key={"home"}>
+                <SidebarMenuButton asChild>
+                  <Link href={"/"}>
+                    <Home />
+                    <span>Home</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <SidebarSeparator />
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild variant={"disabled"}>
-                  <div className="opacity-50">
+                  <div>
                     <Library />
                     <span>Your library</span>
                   </div>
