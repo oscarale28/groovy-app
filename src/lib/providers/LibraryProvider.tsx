@@ -1,5 +1,5 @@
 "use client"
-import { createContext, use, useMemo, useState, useEffect } from "react";
+import { createContext, use, useMemo, useState } from "react";
 import { Database } from "../types/database";
 import { Album, Artist, Category, Track } from "../types";
 
@@ -9,6 +9,7 @@ interface LibraryContextType {
   selectedCategory: Category;
   setSelectedCategory: (category: Category) => void;
   playlists: Playlist[];
+  setPlaylists: (playlists: Playlist[]) => void;
   albums: Album[];
   setAlbums: (albums: Album[]) => void;
   artists: Artist[];
@@ -21,6 +22,7 @@ const LibraryContext = createContext<LibraryContextType>({
   selectedCategory: Category.Playlists,
   setSelectedCategory: () => { },
   playlists: [],
+  setPlaylists: () => { },
   albums: [],
   setAlbums: () => { },
   artists: [],
@@ -36,50 +38,19 @@ export const LibraryProvider = ({ children }: { children: React.ReactNode }) => 
   const [albums, setAlbums] = useState<Album[]>([]);
   const [artists, setArtists] = useState<Artist[]>([]);
   const [tracks, setTracks] = useState<Track[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  // const fetchLibraryData = async () => {
-  //   setIsLoading(true);
-  //   setError(null);
-
-  //   try {
-  //     const [userFavorites, userPlaylists] = await Promise.all([
-  //       getUserFavorites(),
-  //       getUserPlaylists()
-  //     ]);
-
-  //     const { tracks: favTracks, albums: favAlbums, artists: favArtists } = userFavorites;
-
-  //     setPlaylists(userPlaylists);
-  //     setAlbums(favAlbums);
-  //     setArtists(favArtists);
-  //     setTracks(favTracks);
-  //   } catch (err) {
-  //     console.error('Error fetching library data:', err);
-  //     setError(err instanceof Error ? err.message : 'Error loading library data');
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchLibraryData();
-  // }, []);
 
   const value = useMemo(() => ({
     selectedCategory,
     setSelectedCategory,
     playlists,
+    setPlaylists,
     albums,
     setAlbums,
     artists,
     setArtists,
     tracks,
-    setTracks,
-    isLoading,
-    error
-  }), [selectedCategory, playlists, albums, setAlbums, artists, setArtists, tracks, setTracks, isLoading, error]);
+    setTracks
+  }), [selectedCategory, playlists, setPlaylists, albums, setAlbums, artists, setArtists, tracks, setTracks]);
 
   return (
     <LibraryContext.Provider value={value}>

@@ -5,6 +5,7 @@ import LoginButton from "@/components/shared/LoginButton"
 import { getUserFavorites } from "@/lib/actions/favorites"
 import { Suspense } from "react"
 import LibrarySidebarContent from "./LibrarySidebarContent"
+import { getUserPlaylists } from "@/lib/actions/playlists"
 
 const CATEGORIES: Category[] = [Category.Playlists, Category.Albums, Category.Artists, Category.Tracks]
 
@@ -12,6 +13,7 @@ const LibrarySidebar = async () => {
 
   const user = await getCurrentUser()
   const userFavorites = getUserFavorites()
+  const userPlaylists = getUserPlaylists()
 
   if (!user) {
     return (
@@ -33,8 +35,8 @@ const LibrarySidebar = async () => {
         <>Loading user favorites...</>
       }>
         {
-          userFavorites.then(favs =>
-            <LibrarySidebarContent favs={favs} />
+          Promise.all([userFavorites, userPlaylists]).then(([favs, playlists]) =>
+            <LibrarySidebarContent favs={favs} playlists={playlists} />
           ).catch(() => (
             <h1>
               Failed to retrieve user library.

@@ -189,3 +189,55 @@ export async function deletePlaylist(playlistId: string) {
   revalidatePath('/library')
   return { success: true }
 }
+
+export async function createPlaylistAndAddTrack(
+  playlistName: string,
+  description: string | null,
+  visibility: 'public' | 'private',
+  trackId: string
+) {
+  const supabase = await createClient()
+
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  if (authError || !user) {
+    throw new Error('Unauthorized')
+  }
+
+  // Create playlist
+  const { data: playlist, error: createError } = await supabase
+    .from('playlists')
+    .insert({
+      user_id: user.id,
+      name: playlistName,
+      description: description,
+      visibility_status: visibility
+    })
+    .select()
+    .single()
+
+  if (createError || !playlist) {
+    throw new Error('Failed to create playlist')
+  }
+
+  // Add track to playlist
+  const { error: addError } = await supabase
+    .from('playlist_tracks')
+    .insert({
+      playlist_id: playlist.id,
+      spotify_track_id: trackId,
+      position: 1
+    })
+
+  if (addError) {
+    // If adding track fails, we should probably delete the playlist
+    // to avoid having empty playlists created.
+    await supabase.from('playlists').delete().eq('id', playlist.id)
+    throw new Error('Failed to add track to new playlist')
+  }
+
+  revalidatePath('/playlists')
+  revalidatePath('/library')
+  revalidatePath(`/playlists/${playlist.id}`)
+
+  return playlist
+}
