@@ -1,36 +1,27 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎵 Groovy App
 
-## Getting Started
+Groovy App is a music application built with Next.js, designed to provide a rich user experience for exploring music, managing personal libraries, and interacting with playlists.
 
-First, run the development server:
+## 🧩 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Music Exploration:** Discover new releases, trending albums, and recommended artists.
+- **Personal Library Management:** Add and remove favorite tracks and artists from your personal library.
+- **Playlist Management:** Create new playlists and add songs to existing playlists.
+- **Detailed Views:** View detailed information for albums and artists, including their top tracks and related content.
+- **Responsive Design:** Enjoy a seamless experience across various devices.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ⚙️ API and Services
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Spotify API:** Used for fetching comprehensive music data, including albums, artists, and tracks. This powers the music exploration and detailed views.
+- **Supabase:** Utilized as the backend service for anonymous user authentication and managing user-specific data such as favorite tracks, artists, and custom playlists.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📈 Improvement Opportunities
 
-## Learn More
+- Implement custom audio player, since the Spotify API no longer provides links to track previews and authentication is required for using Player endpoints, which was not considered within scope.
+- Implement global app search.
+- Create a dedicated user library page.
+- Enhance visual animations.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The project was developed by Oscar Orellana as part of the KODIGO Full Stack Developer Bootcamp.
