@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Figtree } from "next/font/google";
 import "./globals.css";
 import MainLayout from "@/components/layouts/MainLayout";
+import { Toaster } from "sonner";
 
 const figtree = Figtree({
   subsets: ["latin"],
@@ -25,6 +26,7 @@ export default function RootLayout({
         <MainLayout>
           {children}
         </MainLayout>
+        <Toaster />
       </body>
     </html>
   );

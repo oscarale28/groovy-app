@@ -2,7 +2,7 @@
 
 import { SPOTIFY_ROUTES } from "../consts"
 import { spotifyFetch } from "../fetch"
-import { Album } from "../types"
+import { Album, Artist, Track } from "../types"
 
 async function getSpotifyAccessToken() {
 
@@ -42,9 +42,9 @@ async function getSeveralSpotifyData<T>(props: GetSeveralSpotifyDataProps): Prom
 
   const queryIds = itemsIds
   const ENDPOINT = {
-    ["artists"]: SPOTIFY_ROUTES.getArtists,
-    ["albums"]: SPOTIFY_ROUTES.getAlbums,
-    ["tracks"]: SPOTIFY_ROUTES.getTracks
+    "artists": SPOTIFY_ROUTES.getArtists,
+    "albums": SPOTIFY_ROUTES.getAlbums,
+    "tracks": SPOTIFY_ROUTES.getTracks
   }[dataType]
 
   const response = await spotifyFetch({
@@ -84,9 +84,45 @@ async function getAlbumDetails(albumId: string): Promise<Album> {
   return response
 }
 
+async function getArtistDetails(artistId: string): Promise<
+  {
+    artistInfo: Artist,
+    artistTopTracks: {
+      tracks: Track[]
+    },
+    artistAlbums: {
+      items: Album[]
+    }
+  }> {
+  const ARTIST_ENDPOINT = SPOTIFY_ROUTES.getSingleArtist.replace(':id', artistId)
+  const TOP_TRACKS_ENDPOINT = ARTIST_ENDPOINT + SPOTIFY_ROUTES.getArtistTopTracks
+  const ARTIST_ALBUMS_ENDPOINT = ARTIST_ENDPOINT + SPOTIFY_ROUTES.getAlbums
+
+  const [artistInfo, artistTopTracks, artistAlbums] = await Promise.all([
+    spotifyFetch({
+      url: ARTIST_ENDPOINT,
+    }),
+    spotifyFetch({
+      url: TOP_TRACKS_ENDPOINT,
+    }),
+    spotifyFetch({
+      url: ARTIST_ALBUMS_ENDPOINT,
+    })
+  ])
+
+
+  return {
+    artistInfo,
+    artistTopTracks,
+    artistAlbums
+  }
+}
+
+
 export {
   getSpotifyAccessToken,
   getSeveralSpotifyData,
   getNewReleases,
-  getAlbumDetails
+  getAlbumDetails,
+  getArtistDetails
 }

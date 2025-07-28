@@ -2,27 +2,35 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { Album } from "@/lib/types";
+import { Album, Category } from "@/lib/types";
 import TracksTable from "@/components/shared/TracksTable";
-import { Heart } from "lucide-react";
+import { Heart, HeartOff } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toggleFavoriteAlbum } from "@/lib/actions/favorites";
 import { useLibrary } from "@/lib/providers/LibraryProvider";
 import { cn } from "@/lib/utils";
+import { useTransition } from "react";
 
 interface AlbumViewProps {
   album: Album;
 }
 
 const AlbumView = ({ album }: AlbumViewProps) => {
+  const [isPending, startTransition] = useTransition()
+  const { albums, setSelectedCategory } = useLibrary()
 
-  const { albums } = useLibrary()
+  const markedAsFav = albums?.some(favAlbum => favAlbum.id === album.id)
 
-  const markedAsFav = albums.some(favAlbum => favAlbum.id === album.id)
+  const handleToggleFavorite = () => {
+    startTransition(async () => {
+      await toggleFavoriteAlbum(album.id)
+      setSelectedCategory(Category.Albums)
+    })
+  }
 
   return (
     <div className="flex flex-col gap-8 text-foreground">
-      <div className="flex flex-col gap-4 md:flex-row md:items-end">
+      <div className="flex flex-col gap-4 items-center md:flex-row md:items-end">
         <Image
           src={album.images[0].url}
           alt={album.name}
@@ -30,23 +38,24 @@ const AlbumView = ({ album }: AlbumViewProps) => {
           height={224}
           className="h-56 w-56 rounded-md object-cover shadow-lg"
         />
-        <div className="flex flex-col gap-2">
-          <div className="flex gap-4 lg:flex-col">
+        <div className="flex flex-col gap-2 items-center lg:items-start">
+          <div className="flex gap-4 items-center lg:flex-col lg:items-start">
             <Tooltip>
-              <TooltipTrigger className="cursor-pointer" onClick={
-                async () => toggleFavoriteAlbum(album.id)
-              }>
+              <TooltipTrigger className="cursor-pointer w-8 h-8" onClick={handleToggleFavorite} disabled={isPending}>
                 <div className={
                   cn(
                     "group w-8 h-8 bg-primary/30 rounded-full flex justify-center items-center hover:bg-primary hover:scale-110 transition-all",
-                    markedAsFav && "bg-primary"
+                    markedAsFav && "bg-primary",
+                    isPending && "bg-primary/50 animate-pulse"
                   )
                 }>
-                  <Heart size={20} />
+                  {
+                    markedAsFav ? <HeartOff size={20} /> : <Heart size={20} />
+                  }
                 </div>
               </TooltipTrigger>
               <TooltipContent>
-                Save to favorites
+                {markedAsFav ? "Remove from library" : "Save to library"}
               </TooltipContent>
             </Tooltip>
             <h1 className="text-5xl lg:text-6xl font-bold">{album.name}</h1>
