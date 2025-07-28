@@ -2,9 +2,9 @@
 
 import { createClient } from '../supabase/server'
 
-type AuthenticatedAction<T extends any[], R> = (user: any, ...args: T) => Promise<R>
+type AuthenticatedAction<T extends unknown[], R> = (user: unknown, ...args: T) => Promise<R>
 
-export async function withSupabaseAuth<T extends any[], R>(
+export async function withSupabaseAuth<T extends unknown[], R>(
   action: AuthenticatedAction<T, R>
 ) {
   return async (...args: T): Promise<R> => {

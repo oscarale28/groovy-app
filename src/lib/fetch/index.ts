@@ -10,7 +10,7 @@ type SpotifyFetchParams = {
 export async function spotifyFetch({
   url,
   options = {}
-}: SpotifyFetchParams): Promise<any> {
+}: SpotifyFetchParams) {
   const cookiesStore = await cookies()
   let accessToken = cookiesStore.get('spotify_access_token')?.value
 
