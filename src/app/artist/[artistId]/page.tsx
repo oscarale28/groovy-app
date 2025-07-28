@@ -4,11 +4,12 @@ import ArtistViewSkeleton from "./ArtistViewSkeleton";
 import { getArtistDetails } from "@/lib/actions/spotify";
 
 type ArtistPageProps = {
-  params: { artistId: string };
+  params: Promise<{ artistId: string }>;
 };
 
 export default async function ArtistPage({ params }: ArtistPageProps) {
-  const artistCompleteData = getArtistDetails(params.artistId);
+  const { artistId } = await params;
+  const artistCompleteData = getArtistDetails(artistId);
 
   return (
     <Suspense fallback={<ArtistViewSkeleton />}>
