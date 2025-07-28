@@ -13,7 +13,8 @@ const RECOMMENDED_ARTISTS_IDS: string[] = [
 const SPOTIFY_ROUTES = {
   base: "https://api.spotify.com/v1",
   getArtists: "/artists",
-  getSingleArtist: "/artist/:id",
+  getSingleArtist: "/artists/:id",
+  getArtistTopTracks: "/top-tracks",
   getNewReleases: "/browse/new-releases",
   getAlbums: "/albums",
   getSingleAlbum: "/albums/:id",
