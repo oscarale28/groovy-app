@@ -21,6 +21,7 @@ Groovy App is a music application built with Next.js, designed to provide a rich
 - Implement global app search.
 - Create a dedicated user library page.
 - Enhance visual animations.
+- Integrate i18n and multiple color themes.
 
 ---
 
