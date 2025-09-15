@@ -1,8 +1,9 @@
-FROM node:18-alpine AS base
+FROM node:20-alpine AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
+# Stage build
 FROM base AS build
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
@@ -14,7 +15,10 @@ RUN pnpm run build
 FROM base AS production
 WORKDIR /app
 
-# Copiamos solo lo necesario desde build
+# Copiamos package.json + lockfile
+COPY package.json pnpm-lock.yaml ./
+
+# Copiamos node_modules y build desde stage build
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/public ./public
 COPY --from=build /app/.next/ ./.next
