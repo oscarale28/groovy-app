@@ -7,18 +7,18 @@ FROM base AS build
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-
-FROM base AS dokploy
-WORKDIR /app
-COPY --from=build /app/node_modules ./node_modules
 COPY . .
-
 RUN pnpm run build
 
-# Copy only the necessary files
-COPY --from=dokploy /app/public ./public 
-COPY --from=dokploy --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=dokploy --chown=nextjs:nodejs /app/.next/static ./.next/static
+# Stage final para producción
+FROM base AS production
+WORKDIR /app
+
+# Copiamos solo lo necesario desde build
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/public ./public
+COPY --from=build /app/.next/standalone ./
+COPY --from=build /app/.next/static ./.next/static
 
 EXPOSE 3000
 CMD ["pnpm", "start"]
