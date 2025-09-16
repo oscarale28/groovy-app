@@ -19,6 +19,7 @@ const AlbumCard = ({ album, classname }: { album: Album, classname?: string }) =
           width={100}
           height={100}
           className='aspect-square w-full rounded-lg mb-3'
+          unoptimized
         />
         <div className="flex-1 flex flex-col justify-between">
           <div>

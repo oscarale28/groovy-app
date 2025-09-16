@@ -21,7 +21,7 @@ const AppHeader = async () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-foreground" size={18} />
               <Input
                 type="text"
-                placeholder="What do you want to listen to?"
+                placeholder="What do you want to listen today?"
                 // value={searchQuery}
                 // onChange={(e) => setSearchQuery(e.target.value)}
                 className="border-0 bg-transparent! pl-10 text-foreground placeholder-foreground rounded-xl"
